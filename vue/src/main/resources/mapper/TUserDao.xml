@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.by.dao.TUserDao">
+
+    <resultMap type="com.by.entity.TUser" id="TUserMap">
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="userAge" column="user_age" jdbcType="INTEGER"/>
+        <result property="userBir" column="user_bir" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TUserMap">
+        select
+          user_id, user_name, user_age, user_bir
+        from text.t_user
+        where user_id = #{userId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TUserMap">
+        select
+          user_id, user_name, user_age, user_bir
+        from text.t_user
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TUserMap">
+        select
+          user_id, user_name, user_age, user_bir
+        from text.t_user
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="userAge != null">
+                and user_age = #{userAge}
+            </if>
+            <if test="userBir != null">
+                and user_bir = #{userBir}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="userId" useGeneratedKeys="true">
+        insert into text.t_user(user_name, user_age, user_bir)
+        values (#{userName}, #{userAge}, #{userBir})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update text.t_user
+        <set>
+            <if test="userName != null and userName != ''">
+                user_name = #{userName},
+            </if>
+            <if test="userAge != null">
+                user_age = #{userAge},
+            </if>
+            <if test="userBir != null">
+                user_bir = #{userBir},
+            </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from text.t_user where user_id = #{userId}
+    </delete>
+
+</mapper>
